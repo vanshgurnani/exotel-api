@@ -18,19 +18,31 @@ app.post('/makeCall', async (req, res) => {
     const subdomain = '@api.exotel.com';
     const sid = 'blackcheriemedia1';
 
-    console.log('Received payload:', req.body);
+    // Payload for the API request (received from frontend)
+    const payload = req.body; // Assuming the payload is sent in the request body
 
-    // Extract payload from req.body
-    const { From, To, CallerId } = req.body;
+    // Validate the presence of required fields in the payload
+    if (!payload || !payload.From || !payload.To || !payload.CallerId) {
+      return res.status(400).json({ error: 'Bad Request: Missing required fields in payload' });
+    }
 
     // Update the API endpoint with actual values
-    const apiUrl = `https://${apiKey}:${apiToken}${subdomain}/v1/Accounts/${sid}/Calls`;
+    const apiUrl = `https://${apiKey}:${apiToken}${subdomain}/v1/Accounts/${sid}/Calls/connect`;
 
-    const response = await axios.post(apiUrl, {
-      From,
-      To,
-      CallerId,
-    });
+    // Convert payload to a query string
+    const dataString = `From=${payload.From}&To=${payload.To}&CallerId=${payload.CallerId}`;
+
+    const options = {
+      url: apiUrl,
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      data: dataString,
+    };
+
+    // Make the Exotel API request using axios
+    const response = await axios(options);
 
     console.log('Exotel API Response:', response.data);
 

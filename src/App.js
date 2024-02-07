@@ -1,5 +1,3 @@
-// CallButton.js
-
 import React from 'react';
 import axios from 'axios';
 
@@ -33,7 +31,3 @@ const CallButton = () => {
 };
 
 export default CallButton;
-
-
-
-
